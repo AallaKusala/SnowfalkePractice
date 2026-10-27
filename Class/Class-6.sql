@@ -1,4 +1,4 @@
-- Joins : In order to combine and fetch 2 or more tables data 
+-- Joins : In order to combine and fetch 2 or more tables data 
 
 -- Inner : the combination of matched values from both the tables it will fetch 
 -- left:  inner join + remaining values from left side table , if the value notmatch print as null 
