@@ -1,3 +1,76 @@
+                     ------   Copy Command Syntax   -----
+
+-- COPY INTO <table_name>
+-- FROM  @ExternalStage
+-- FILES = ( '<file_name>','<file_name2>')
+-- FILE_FORMAT = <file_format_name>
+
+
+                       ----- COPY OPTIONS ----
+
+-- VALIDATION_MODE
+
+-- RETURN_FAILED_ONLY
+
+-- ON_ERROR
+
+-- FORCE
+
+-- SIZE_LIMIT
+
+-- TRUNCATECOLUMNS
+
+-- ENFORCE_LENGTH
+
+-- PURGE
+
+
+                         ------ VALIDATION_MODE  -------
+
+-- COPY INTO <table_name>
+-- FROM  @ExternalStage
+-- FILES = ( '<file_name>','<file_name2>')
+-- FILE_FORMAT = <file_format_name>
+-- VALIDATION_MODE = RETURN_n_ROWS|RETURN_ERRORS|RETURN_ALL_ERRORS;
+
+-- -> Validate the data files instead of loading them into the table
+
+--  ->RETURN_ERRORS gives all errors in the files
+--  ->RETURN_ALL_ERRORS gives all errors from previously loaded files if we have used
+--    ON_ERROR = CONTINUE
+--  ->RETURN_N_ROWS displays first N records and fails at the first error record 
+
+
+                      ------ RETURN_FAILED_ONLY ---------
+
+-- COPY INTO <table_name>
+-- FROM  @ExternalStage
+-- FILES = ( '<file_name>','<file_name2>')
+-- FILE_FORMAT = <file_format_name>
+-- RETURN_FAILED_ONLY = TRUE | FALSE ;
+
+-- ->Specifies whether to return only files that have failed to load in the statement result
+-- ->Default is FALSE
+
+                      ---------- ON_ERROR ------------
+
+-- COPY INTO <table_name>
+-- FROM  @ExternalStage
+-- FILES = ( '<file_name>','<file_name2>')
+-- FILE_FORMAT = <file_format_name>
+-- ON_ERROR = CONTINUE | SKIP_FILE | SKIP_FILE_num | SKIP_FILE_num% | ABORT_STATEMENT
+
+-- ->CONTINUE -To skip error and load remaining records
+-- ->SKIP_FILE -To skip the files that contain errors
+-- ->SKIP_FILE_NUM -Skip a file when the number of error rows found in the file is equal to or exceeds the specified number.
+-- ->SKIP_FILE_NUM% - Skip a file when the percentage of error rows found in the file exceeds the specified percentage.
+-- ->Default is ABORT_STATEMENT, Abort the load operation if any error is found in a data file.
+
+
+
+
+
+
 1  -- 50000 -- PROCESSED 
 2   -- 20000 -- PROCESS
 3  -- 30000
