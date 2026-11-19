@@ -1,0 +1,150 @@
+ -------------  Time Travel & file safe   --------------
+			     
+                 ------ Zero Copy Cloning -------
+							
+							
+-- Time Travel : 
+-- In order to fetch historical data(like accidentally deleted or updated data) we are going to use time travel , We can recover data up to 90 days.
+-- 	              By default retention period is 1 day 
+-- 		We can set up to 90 days for permanent table
+-- 		 3 ways to recover this 
+				  
+-- 		  1)offset 
+-- 		  2)timestamp 
+-- 		  3)Query id
+-- Once Time Travel period ended data will be moved to File Safe.
+-- It’s Available (1 to 7-day recovery after Time Travel ends) Need to connect for snowflake Team
+-- SELECT * FROM OUR_FIRST_DB.public.employees at (OFFSET => -60*1.5)
+-- SELECT * FROM OUR_FIRST_DB.public.employees before (timestamp => '2025-09-23 04:40:15.000'::timestamp)
+-- SELECT * FROM OUR_FIRST_DB.public.employees before (statement => '01bf3c5a-0001-63a1-000b-b8920004013e')
+-- )
+-- ALTER TABLE test SET DATA_RETENTION_TIME_IN_DAYS=30;
+
+
+
+employee --->  40 
+
+deleted --> 1st ---> 5 days 
+
+
+
+
+-- Zero Copy Cloning:
+-- 	We can maintain multiple copies of data with no additional cost and storage  so we call zero copy.
+-- 	Create N number of copies of a database, a schema or a table
+-- 	Cloned object is independent from original
+-- 	Creating backups for development/testing  purposes
+-- 	NOTE: Temp table cannot be cloned to a permanent table clone to a transient table instead.
+-- 	But we can clone temporary to temporary 
+
+CREATE TABLE <table_name> ... CLONE	<source_table_name>
+
+
+
+
+use HR.VIT;
+
+select * from HR.VIT.EMPLOYEES;
+
+show tables ;
+
+ALTER TABLE EMPLOYEES SET DATA_RETENTION_TIME_IN_DAYS=30;
+
+
+
+
+delete  from HR.VIT.EMPLOYEES;
+
+
+select * from HR.VIT.EMPLOYEES;
+
+
+SELECT * FROM HR.VIT.EMPLOYEES at (OFFSET => -60*2)
+
+
+create table emps as 
+(
+SELECT * FROM HR.VIT.EMPLOYEES at (OFFSET => -60*3)
+)
+
+
+insert into HR.VIT.EMPLOYEES
+(
+   select * from emps 
+)
+
+select * from HR.VIT.EMPLOYEES;
+
+update HR.VIT.EMPLOYEES 
+    set first_name = 'Abhinash'
+
+SELECT * FROM HR.VIT.EMPLOYEES before (statement => '01c8827a-3203-f7f1-0018-6c8a0024c21a')
+
+
+select * from HR.VIT.EMPLOYEES;
+
+
+update HR.VIT.EMPLOYEES 
+    set email = 'abc@gmail.com';
+
+    select current_timestamp()
+
+SELECT * FROM HR.VIT.EMPLOYEES before (timestamp => '2026-11-18 22:19:03.986 -0800'::timestamp)
+
+
+
+--30  31st  --filesafe --(1-7)   
+
+
+-----------------zero copy clone -----------------
+
+CREATE TABLE <table_name> ... CLONE	<source_table_name>
+
+
+CREATE database hr_clone2  CLONE	hr ;
+
+
+CREATE schema hr_clone2.vit_copy  CLONE	hr_clone2.vit ;
+
+
+CREATE schema hr_clone2.ext_stgs_copy  CLONE	manage_db.external_stages ;
+
+
+
+create table hr.vit.netfilx_copy   clone MANAGE_DB.PUBLIC.NETFLIX_TITLES;
+
+
+select * from  MANAGE_DB.PUBLIC.NETFLIX_TITLES ;  --31148
+
+
+
+select * from  hr.vit.netfilx_copy ;
+
+delete from  hr.vit.netfilx_copy where release_year >= 2010;
+
+
+drop database HR_CLONE2;
+
+drop database HR_CLONE1;
+
+
+undrop database HR_CLONE2;
+
+
+create database VITECH_prod_DB  clone VITECH_DEV_DB ;
+
+
+delete from VITECH_DEV_DB.PUBLIC.LOAN_PAYMENT ;
+
+select * from  VITECH_DEV_DB.PUBLIC.LOAN_PAYMENT ;
+
+
+
+select * from  VITECH_prod_DB.PUBLIC.LOAN_PAYMENT ;
+
+
+create or replace table   VITECH_DEV_DB.PUBLIC.LOAN_PAYMENT clone VITECH_prod_DB.PUBLIC.LOAN_PAYMENT ;
+
+
+
+Select * from VITECH_DEV_DB.PUBLIC.LOAN_PAYMENT;
